@@ -1,0 +1,29 @@
+---
+import { CONTACT } from '../consts';
+---
+<div class="sticky-contact" aria-label="Contact rapide">
+  <a href={CONTACT.whatsapp} class="sticky-contact__btn sc-wa" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm5.8 14.13c-.25.69-1.45 1.32-1.99 1.36-.53.04-.53.42-3.34-.7-2.81-1.12-4.6-3.99-4.74-4.18-.14-.18-1.14-1.52-1.14-2.9 0-1.38.72-2.06.98-2.34.25-.28.55-.35.74-.35.18 0 .37 0 .53.01.17.01.4-.06.62.48.25.6.85 2.07.92 2.22.07.14.12.32.02.51-.09.18-.14.3-.28.46-.14.16-.3.36-.42.48-.14.14-.29.29-.12.57.16.28.74 1.22 1.59 1.98 1.09.97 2.01 1.27 2.29 1.41.28.14.44.12.6-.07.18-.21.7-.81.89-1.09.18-.28.37-.23.62-.14.25.09 1.61.76 1.89.9.28.14.46.21.53.32.07.12.07.65-.18 1.34Z"/></svg>
+    <span class="sticky-contact__tip">WhatsApp</span>
+  </a>
+  <a href={CONTACT.calendly} class="sticky-contact__btn sc-cal" target="_blank" rel="noopener" aria-label="Réserver un appel sur Calendly">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>
+    <span class="sticky-contact__tip">Réserver un appel</span>
+  </a>
+</div>
+
+<style>
+  .sticky-contact { position: fixed; right: clamp(1rem, 3vw, 1.5rem); bottom: clamp(1rem, 3vw, 1.5rem); z-index: 55; display: flex; flex-direction: column; gap: 0.7rem; }
+  .sticky-contact__btn { width: 54px; height: 54px; border-radius: 999px; display: grid; place-items: center; box-shadow: var(--shadow); position: relative; transition: transform 0.18s ease, width 0.25s ease; }
+  .sticky-contact__btn:hover { transform: translateY(-3px); }
+  .sc-wa { background: #1faf5b; color: #fff; }
+  .sc-cal { background: var(--emerald); color: var(--bone); }
+  .sticky-contact__tip {
+    position: absolute; right: 64px; top: 50%; transform: translateY(-50%) translateX(6px);
+    background: var(--ink); color: var(--bone); font-size: 0.8rem; font-weight: 600;
+    padding: 0.45em 0.8em; border-radius: var(--radius); white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .sticky-contact__btn:hover .sticky-contact__tip { opacity: 1; transform: translateY(-50%) translateX(0); }
+  @media (max-width: 600px) { .sticky-contact__tip { display: none; } }
+</style>

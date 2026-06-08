@@ -1,0 +1,83 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  path?: string;
+  ogType?: string;
+  noindex?: boolean;
+}
+const { title, description, path, ogType, noindex } = Astro.props;
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <BaseHead title={title} description={description} path={path} ogType={ogType} noindex={noindex} />
+    <slot name="head" />
+  </head>
+  <body class="grain">
+    <a href="#main" class="skip-link">Aller au contenu</a>
+    <div id="scroll-progress"></div>
+    <slot />
+
+    <script>
+      // Barre de progression
+      const bar = document.getElementById('scroll-progress');
+      const onScroll = () => {
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        if (bar) bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // Révélations au scroll
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const revealEls = document.querySelectorAll('[data-reveal]');
+      if (reduce) {
+        revealEls.forEach((el) => el.classList.add('is-visible'));
+      } else if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach((e) => {
+            if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+          }),
+          { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+        );
+        revealEls.forEach((el) => io.observe(el));
+      } else {
+        revealEls.forEach((el) => el.classList.add('is-visible'));
+      }
+
+      // Compteurs animés (data-count)
+      const counters = document.querySelectorAll('[data-count]');
+      const animate = (el: Element) => {
+        const target = parseFloat(el.getAttribute('data-count') || '0');
+        const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+        const dur = 1400;
+        const start = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min((now - start) / dur, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          (el as HTMLElement).textContent = (target * eased).toFixed(decimals);
+          if (p < 1) requestAnimationFrame(tick);
+          else (el as HTMLElement).textContent = target.toFixed(decimals);
+        };
+        requestAnimationFrame(tick);
+      };
+      if (!reduce && 'IntersectionObserver' in window) {
+        const cio = new IntersectionObserver((entries) => entries.forEach((e) => {
+          if (e.isIntersecting) { animate(e.target); cio.unobserve(e.target); }
+        }), { threshold: 0.5 });
+        counters.forEach((c) => cio.observe(c));
+      } else {
+        counters.forEach((c) => {
+          const t = parseFloat(c.getAttribute('data-count') || '0');
+          const d = parseInt(c.getAttribute('data-decimals') || '0', 10);
+          (c as HTMLElement).textContent = t.toFixed(d);
+        });
+      }
+    </script>
+  </body>
+</html>

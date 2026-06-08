@@ -1,0 +1,78 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import { CONTACT } from '../consts';
+
+const title = "Guide gratuit : les 17 erreurs des investisseurs français à Las Terrenas";
+const description = "Téléchargez gratuitement le guide des 17 erreurs qui coûtent le plus cher aux investisseurs français à Las Terrenas. Le document que nous remettons à nos clients avant tout achat.";
+
+const errors = [
+  "Confondre rendement brut et rendement net",
+  "Présumer le CONFOTUR sans vérifier la certification",
+  "Acheter sans deslinde (bornage GPS) à jour",
+  "Se fier aux « prix du marché » d'annonces, faute de registre public",
+  "Négliger les frais de change et le rapatriement des loyers",
+  "Sous-estimer la gestion locative réelle",
+  "Signer sans avocat indépendant",
+];
+---
+<MarketingLayout title={title} description={description} path="/guide">
+  <section class="section section--ink guide-hero">
+    <div class="container guide-grid">
+      <div data-reveal>
+        <span class="eyebrow">Guide gratuit · PDF</span>
+        <h1>Les 17 erreurs qui coûtent le plus cher aux investisseurs français à Las Terrenas.</h1>
+        <p class="lead">Le document que nous remettons à nos clients avant tout achat. Concret, chiffré, sans jargon. Pour acheter en connaissance de cause — pas sur une promesse.</p>
+        <ul class="guide-list">
+          {errors.map((e, i) => (
+            <li><span>{String(i + 1).padStart(2, '0')}</span>{e}</li>
+          ))}
+          <li class="guide-list__more"><span>+10</span>… et les dix autres dans le guide complet.</li>
+        </ul>
+      </div>
+
+      <div class="guide-form-wrap" data-reveal>
+        <form name="guide-landing" method="POST" action="/merci" data-netlify="true" netlify-honeypot="bot-field" class="guide-form">
+          <input type="hidden" name="form-name" value="guide-landing" />
+          <p class="hidden-field"><label>Ne pas remplir : <input name="bot-field" /></label></p>
+          <h2>Recevoir le guide</h2>
+          <label class="field"><span>Prénom</span><input type="text" name="prenom" required placeholder="Votre prénom" /></label>
+          <label class="field"><span>Email</span><input type="email" name="email" required placeholder="vous@email.com" /></label>
+          <label class="field"><span>Votre projet (optionnel)</span>
+            <select name="projet">
+              <option value="">— Sélectionner —</option>
+              <option>Résidence / pied-à-terre</option>
+              <option>Investissement locatif</option>
+              <option>Les deux</option>
+              <option>Je me renseigne</option>
+            </select>
+          </label>
+          <button type="submit" class="btn btn--primary btn--lg">Télécharger le guide gratuit</button>
+          <p class="guide-fine">Aucun spam. Désinscription en un clic. Données traitées par HERELES (RGPD).</p>
+        </form>
+        <p class="guide-alt">Vous préférez en parler ? <a href={CONTACT.calendly} target="_blank" rel="noopener">Réserver un appel</a> ou <a href={CONTACT.whatsapp} target="_blank" rel="noopener">WhatsApp</a>.</p>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>
+
+<style>
+  .guide-hero { min-height: 86vh; display: flex; align-items: center; }
+  .guide-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+  .guide-grid h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); margin: 1rem 0; }
+  .guide-list { margin-top: 2rem; display: grid; gap: 0.7rem; }
+  .guide-list li { display: flex; gap: 1rem; align-items: baseline; color: var(--muted-light); font-size: 0.98rem; }
+  .guide-list li span { font-family: var(--font-mono); font-size: 0.8rem; color: var(--brass); min-width: 2.2em; }
+  .guide-list__more { color: var(--brass) !important; font-style: italic; }
+  .guide-form-wrap { }
+  .guide-form { background: var(--paper); color: var(--ink); border-radius: var(--radius-lg); padding: clamp(1.6rem, 4vw, 2.4rem); display: grid; gap: 0.9rem; box-shadow: var(--shadow-lg); border-top: 3px solid var(--brass); }
+  .guide-form h2 { font-size: 1.5rem; margin-bottom: 0.4rem; }
+  .field { display: grid; gap: 0.35rem; }
+  .field span { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .field input, .field select { padding: 0.85em 1em; border: 1px solid var(--line); border-radius: var(--radius); font: inherit; background: var(--bone-soft); color: var(--ink); }
+  .guide-form .btn { margin-top: 0.4rem; }
+  .guide-fine { font-size: 0.76rem; color: var(--muted); }
+  .guide-alt { margin-top: 1.2rem; font-size: 0.9rem; color: var(--muted-light); text-align: center; }
+  .guide-alt a { color: var(--brass); text-decoration: underline; }
+  .hidden-field { display: none; }
+  @media (max-width: 820px) { .guide-grid { grid-template-columns: 1fr; } .guide-hero { min-height: auto; padding-block: clamp(3.5rem, 9vw, 6rem); } }
+</style>

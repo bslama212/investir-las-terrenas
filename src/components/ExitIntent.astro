@@ -1,0 +1,63 @@
+---
+// Modale exit-intent : capture email pour le guide « 17 erreurs ».
+// Le formulaire utilise Netlify Forms (fonctionne dès le déploiement sur Netlify).
+---
+<div class="exit" id="exit-modal" hidden>
+  <div class="exit__overlay" data-close></div>
+  <div class="exit__card" role="dialog" aria-modal="true" aria-labelledby="exit-title">
+    <button class="exit__close" data-close aria-label="Fermer">&times;</button>
+    <span class="eyebrow">Avant de partir</span>
+    <h3 id="exit-title">Les 17 erreurs qui coûtent le plus cher aux investisseurs français à Las Terrenas</h3>
+    <p>Le guide que nous remettons à nos clients avant tout achat. Gratuit, sans jargon. Reçu par email.</p>
+    <form name="guide-exit" method="POST" action="/merci" data-netlify="true" netlify-honeypot="bot-field" class="exit__form">
+      <input type="hidden" name="form-name" value="guide-exit" />
+      <p class="hidden-field"><label>Ne pas remplir : <input name="bot-field" /></label></p>
+      <input type="email" name="email" required placeholder="Votre email" aria-label="Votre email" />
+      <button type="submit" class="btn btn--primary">Recevoir le guide</button>
+    </form>
+    <p class="exit__fine">Aucun spam. Désinscription en un clic. Données traitées par HERELES (RGPD).</p>
+  </div>
+</div>
+
+<style>
+  .exit { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 1.25rem; }
+  .exit__overlay { position: absolute; inset: 0; background: rgba(12,26,22,0.55); backdrop-filter: blur(3px); }
+  .exit__card {
+    position: relative; background: var(--paper); border-radius: var(--radius-lg);
+    max-width: 30rem; padding: clamp(1.6rem, 4vw, 2.4rem); box-shadow: var(--shadow-lg);
+    border-top: 3px solid var(--brass); animation: exitIn 0.32s ease;
+  }
+  @keyframes exitIn { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+  .exit__card h3 { margin: 0.8rem 0 0.6rem; font-size: 1.4rem; }
+  .exit__card p { color: var(--muted); font-size: 0.96rem; }
+  .exit__close { position: absolute; top: 0.7rem; right: 0.9rem; background: none; border: 0; font-size: 1.8rem; line-height: 1; color: var(--muted); }
+  .exit__form { display: flex; gap: 0.6rem; margin-top: 1.3rem; }
+  .exit__form input[type=email] { flex: 1; padding: 0.85em 1em; border: 1px solid var(--line); border-radius: var(--radius); font: inherit; background: var(--bone-soft); }
+  .exit__fine { font-size: 0.76rem; margin-top: 0.9rem; opacity: 0.8; }
+  .hidden-field { display: none; }
+  @media (max-width: 480px) { .exit__form { flex-direction: column; } .exit__form .btn { width: 100%; } }
+</style>
+
+<script>
+  const modal = document.getElementById('exit-modal');
+  const KEY = 'ilt_exit_seen';
+  let shown = false;
+
+  function open() {
+    if (shown || sessionStorage.getItem(KEY)) return;
+    shown = true;
+    sessionStorage.setItem(KEY, '1');
+    modal?.removeAttribute('hidden');
+  }
+  function close() { modal?.setAttribute('hidden', ''); }
+
+  // Desktop : sortie du curseur par le haut
+  document.addEventListener('mouseout', (e) => {
+    if (!e.relatedTarget && (e as MouseEvent).clientY <= 0) open();
+  });
+  // Mobile / repli : déclenchement après 45 s
+  setTimeout(open, 45000);
+
+  modal?.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+</script>

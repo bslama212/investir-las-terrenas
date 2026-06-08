@@ -1,0 +1,26 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyContact from '../components/StickyContact.astro';
+import ExitIntent from '../components/ExitIntent.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  path?: string;
+  ogType?: string;
+  noindex?: boolean;
+}
+const { title, description, path, ogType, noindex } = Astro.props;
+---
+<BaseLayout title={title} description={description} path={path} ogType={ogType} noindex={noindex}>
+  <slot name="head" slot="head" />
+  <Header />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer />
+  <StickyContact />
+  <ExitIntent />
+</BaseLayout>

@@ -1,0 +1,51 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import { CONTACT } from '../consts';
+
+const PDF = '/guide-17-erreurs-las-terrenas.pdf';
+---
+<MarketingLayout
+  title="Merci — votre guide est prêt"
+  description="Merci. Téléchargez votre guide des 17 erreurs des investisseurs français à Las Terrenas."
+  path="/merci"
+  noindex={true}
+>
+  <section class="section section--ink merci">
+    <div class="container narrow merci__inner">
+      <span class="eyebrow" data-reveal>C'est fait</span>
+      <h1 data-reveal>Merci — votre guide est prêt.</h1>
+      <p class="lead" data-reveal>Vous pouvez le télécharger tout de suite. Une copie vous a également été envoyée par email — pensez à vérifier vos spams.</p>
+
+      <div class="merci__cta" data-reveal>
+        <a href={PDF} class="btn btn--primary btn--lg" download>Télécharger le guide (PDF)</a>
+        <a href={PDF} class="merci__view" target="_blank" rel="noopener">ou l'ouvrir dans le navigateur</a>
+      </div>
+
+      <hr class="rule" />
+
+      <div class="merci__next" data-reveal>
+        <h2>Un projet précis en tête ?</h2>
+        <p>Le guide vous donne le cadre. Pour l'appliquer à votre situation — budget, quartier, rendement réaliste, CONFOTUR — un échange vaut mieux qu'un long email.</p>
+        <div class="btn-row">
+          <a href={CONTACT.calendly} class="btn btn--ghost btn--lg" target="_blank" rel="noopener">Réserver un appel</a>
+          <a href={CONTACT.whatsapp} class="btn btn--wa btn--lg" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </div>
+
+      <p class="merci__back" data-reveal><a href="/">← Retour à l'accueil</a></p>
+    </div>
+  </section>
+</MarketingLayout>
+
+<style>
+  .merci { min-height: 82vh; display: flex; align-items: center; }
+  .merci__inner h1 { margin: 1rem 0; }
+  .merci__cta { margin-top: 2rem; display: flex; flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+  .merci__view { font-family: var(--font-mono); font-size: 0.82rem; color: var(--brass); }
+  .merci .rule { background: var(--line-dark); margin: 2.6rem 0; }
+  .merci__next h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 0.8rem; }
+  .merci__next p { color: var(--muted-light); max-width: 40rem; margin-bottom: 1.4rem; }
+  .merci__back { margin-top: 2.2rem; }
+  .merci__back a { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted-light); }
+  .merci__back a:hover { color: var(--bone); }
+</style>

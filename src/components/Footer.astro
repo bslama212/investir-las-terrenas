@@ -1,0 +1,79 @@
+---
+import { SITE, NAV, CONTACT, SOCIAL, LEGAL, QUARTIERS } from '../consts';
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="footer__name">Investir Las Terrenas</span>
+        <p class="footer__tag">{SITE.tagline}.<br />On sélectionne, on analyse, on vous accompagne.</p>
+        <div class="footer__social">
+          <a href={SOCIAL.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn">LinkedIn</a>
+          <a href={SOCIAL.instagram} target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
+          <a href={SOCIAL.x} target="_blank" rel="noopener" aria-label="X">X</a>
+        </div>
+      </div>
+
+      <nav class="footer__col" aria-label="Guides">
+        <h4>Guides</h4>
+        <a href="/immobilier-las-terrenas">Immobilier Las Terrenas</a>
+        <a href="/acheter-appartement-las-terrenas">Acheter un appartement</a>
+        <a href="/acheter-villa-las-terrenas">Acheter une villa</a>
+        <a href="/prix-immobilier-las-terrenas">Prix immobilier</a>
+        <a href="/rendement-locatif-las-terrenas">Rendement locatif</a>
+        <a href="/confotur">CONFOTUR</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Quartiers & République Dominicaine">
+        <h4>Quartiers & RD</h4>
+        {QUARTIERS.map((q) => <a href={q.href}>{q.name}</a>)}
+        <a href="/investir-republique-dominicaine">Investir en RD</a>
+        <a href="/acheter-en-republique-dominicaine">Acheter en RD</a>
+        <a href="/fiscalite-republique-dominicaine">Fiscalité RD</a>
+      </nav>
+
+      <div class="footer__col">
+        <h4>Contact</h4>
+        <a href={CONTACT.phoneHref}>{CONTACT.phoneDisplay}</a>
+        <span style="font-family:var(--font-mono);font-size:0.72rem;opacity:0.65;">{CONTACT.phoneNote}</span>
+        <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+        <a href={CONTACT.whatsapp} target="_blank" rel="noopener">WhatsApp</a>
+        <a href={CONTACT.calendly} target="_blank" rel="noopener">Réserver un appel</a>
+      </div>
+    </div>
+
+    <hr class="rule" />
+
+    <div class="footer__legal">
+      <p>
+        <strong>{LEGAL.company}</strong> — SIRET {LEGAL.siret} · {LEGAL.addressLegal}.
+        Une activité de <a href={LEGAL.parentUrl} target="_blank" rel="noopener">{LEGAL.parentBrand}</a>.
+      </p>
+      <p class="footer__fine">
+        © {year} {LEGAL.company}. Conseil en acquisition immobilière — les informations fiscales (CONFOTUR, IPI) et de marché
+        sont fournies à titre indicatif et doivent être vérifiées au cas par cas. Aucune promesse de rendement.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--ink); color: var(--bone); padding-block: clamp(3rem, 6vw, 4.5rem) 2.5rem; position: relative; z-index: 2; }
+  .footer__top { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
+  .footer__name { font-family: var(--font-display); font-size: 1.4rem; }
+  .footer__tag { color: var(--muted-light); margin-top: 0.8rem; font-size: 0.95rem; max-width: 22rem; }
+  .footer__social { display: flex; gap: 1.2rem; margin-top: 1.4rem; }
+  .footer__social a { font-family: var(--font-mono); font-size: 0.78rem; color: var(--brass); letter-spacing: 0.06em; }
+  .footer__social a:hover { color: var(--bone); }
+  .footer__col h4 { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--brass); margin-bottom: 1rem; font-weight: 500; }
+  .footer__col a { display: block; color: var(--muted-light); font-size: 0.94rem; padding-block: 0.32rem; }
+  .footer__col a:hover { color: var(--bone); }
+  .footer .rule { background: var(--line-dark); }
+  .footer__legal { margin-top: 2rem; }
+  .footer__legal p { color: var(--muted-light); font-size: 0.85rem; }
+  .footer__legal a { color: var(--brass); }
+  .footer__fine { margin-top: 0.7rem; font-size: 0.78rem; opacity: 0.75; }
+  @media (max-width: 900px) { .footer__top { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .footer__top { grid-template-columns: 1fr; gap: 1.8rem; } }
+</style>

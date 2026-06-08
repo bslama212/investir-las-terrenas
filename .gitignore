@@ -1,0 +1,19 @@
+# build output
+dist/
+.output/
+
+# dependencies
+node_modules/
+
+# astro
+.astro/
+
+# environnement
+.env
+.env.production
+
+# logs / système
+npm-debug.log*
+.DS_Store
+.vscode/
+.netlify/

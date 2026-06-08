@@ -1,0 +1,160 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../consts';
+
+const title = "CONFOTUR : l'exonération fiscale immobilière en République Dominicaine";
+const description = "Tout sur le CONFOTUR (loi 158-01) : exonération de la taxe de transfert de 3 % et de l'impôt foncier IPI pendant 10 à 15 ans. Conditions, durée, transmission à la revente et simulateur d'économie.";
+
+const faq = [
+  { q: "Qu'est-ce que le CONFOTUR ?", a: "Le CONFOTUR est un dispositif fiscal dominicain (loi 158-01, 2001) qui exonère le premier acquéreur d'un bien situé dans un projet touristique certifié de la taxe de transfert de 3 % et de l'impôt foncier annuel (IPI) pendant 10 à 15 ans." },
+  { q: "Le CONFOTUR est-il automatique ?", a: "Non. Seuls les biens d'un projet certifié CONFOTUR y ouvrent droit. La certification se vérifie projet par projet, sur pièces — jamais sur une plaquette commerciale." },
+  { q: "Combien de temps dure l'exonération ?", a: "En général 10 à 15 ans pour l'IPI, à compter de la certification du projet. La durée restante dépend donc de l'ancienneté du projet." },
+  { q: "L'avantage est-il transmis à la revente ?", a: "Souvent, l'exonération est attachée au bien et peut bénéficier à un acquéreur ultérieur pour la durée restante. Ce point doit être confirmé au cas par cas." },
+  { q: "À partir de quelle valeur l'IPI s'applique-t-il ?", a: "L'IPI (1 % par an) ne s'applique qu'au-delà d'un seuil d'exonération d'environ 170 000 US$, indexé chaque année. Le CONFOTUR neutralise cet impôt sur la période d'exonération." },
+];
+
+const breadcrumb = {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'CONFOTUR', item: `${SITE.url}/confotur` },
+  ],
+};
+---
+<MarketingLayout title={title} description={description} path="/confotur" ogType="article">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} slot="head" />
+
+  <section class="section section--ink page-hero">
+    <div class="container narrow">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><a href="/">Accueil</a> <span>/</span> <span>CONFOTUR</span></nav>
+      <span class="eyebrow">Fiscalité immobilière · République Dominicaine</span>
+      <h1>CONFOTUR : <em>0 %</em> de taxe de transfert, IPI exonéré jusqu'à 15 ans.</h1>
+      <p class="lead">Le dispositif fiscal phare de l'immobilier touristique dominicain. Ce qu'il couvre, ses conditions, et combien il peut vous faire économiser — sans promesse, avec les chiffres.</p>
+    </div>
+  </section>
+
+  <!-- Définition rapide (extrait IA / GEO) -->
+  <section class="section">
+    <div class="container narrow">
+      <div class="def" data-reveal>
+        <span class="def__label">En une phrase</span>
+        <p>Le <strong>CONFOTUR</strong> (loi 158-01) exonère le <strong>premier acquéreur</strong> d'un bien situé dans un <strong>projet touristique certifié</strong> de la <strong>taxe de transfert de 3 %</strong> à l'achat et de l'<strong>impôt foncier annuel (IPI) de 1 %</strong> pendant <strong>10 à 15 ans</strong>, avec souvent une exonération des revenus locatifs sur une dizaine d'années.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIMULATEUR -->
+  <section class="section section--paper">
+    <div class="container narrow">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Simulateur</span>
+        <h2>Combien le CONFOTUR vous fait <em>économiser</em> ?</h2>
+        <p class="lead">Estimation indicative pour un premier acquéreur dans un projet certifié. Ce n'est ni un conseil fiscal, ni une garantie.</p>
+      </div>
+
+      <div class="calc" data-reveal>
+        <label class="calc__field">
+          <span>Prix d'achat du bien</span>
+          <output id="calc-price">250 000 €</output>
+        </label>
+        <input type="range" id="calc-range" min="100000" max="900000" step="10000" value="250000" aria-label="Prix d'achat" />
+
+        <div class="calc__results">
+          <div class="calc__res">
+            <span class="calc__res-label">Taxe de transfert (3 %) économisée</span>
+            <strong id="calc-transfer">7 500 €</strong>
+          </div>
+          <div class="calc__res">
+            <span class="calc__res-label">IPI économisé sur 15 ans (1 %/an)</span>
+            <strong id="calc-ipi">13 950 €</strong>
+          </div>
+          <div class="calc__res calc__res--total">
+            <span class="calc__res-label">Économie estimée</span>
+            <strong id="calc-total">21 450 €</strong>
+          </div>
+        </div>
+        <p class="calc__note">
+          IPI calculé sur la valeur au-delà d'un seuil d'exonération d'environ 157 000 € (≈ 170 000 US$, indexé).
+          Hors exonération éventuelle des revenus locatifs. Montants indicatifs — à valider projet par projet avec un avocat indépendant.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conditions -->
+  <section class="section">
+    <div class="container narrow">
+      <article class="prose">
+        <h2>Les trois conditions à vérifier, sans exception</h2>
+        <p>L'erreur la plus coûteuse consiste à croire qu'acheter en République Dominicaine ouvre droit au CONFOTUR. Trois points se vérifient sur pièces&nbsp;:</p>
+        <ol>
+          <li><strong>Le projet est-il réellement certifié CONFOTUR&nbsp;?</strong> La résolution de certification doit exister et être vérifiable.</li>
+          <li><strong>Êtes-vous le premier acquéreur — ou l'avantage est-il transférable&nbsp;?</strong> Cela change la valeur du bénéfice.</li>
+          <li><strong>Quelle est la durée restante&nbsp;?</strong> Un projet certifié il y a douze ans n'offre plus le même horizon qu'un projet récent.</li>
+        </ol>
+        <h2>Pourquoi le faire vérifier par un tiers indépendant</h2>
+        <p>Aucune de ces vérifications ne se fait sur une plaquette. Elles relèvent de l'analyse documentaire et juridique, menée avec votre propre avocat. C'est exactement le type de point que votre conseil à l'achat contrôle <strong>avant</strong> votre signature — pas après.</p>
+        <blockquote>Information à jour de 2026 et fournie à titre indicatif. Le CONFOTUR et les seuils d'IPI évoluent ; toute opération doit être vérifiée au cas par cas.</blockquote>
+      </article>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container narrow">
+      <Faq items={faq} title="CONFOTUR — questions fréquentes" />
+    </div>
+  </section>
+
+  <CtaBand title="Un projet certifié CONFOTUR en vue ?" text="Envoyez-nous le projet : nous vérifions la certification, votre éligibilité et l'économie réelle avant que vous ne vous engagiez." />
+</MarketingLayout>
+
+<style>
+  .page-hero h1 { margin: 1rem 0; }
+  .crumbs { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted-light); margin-bottom: 1.4rem; }
+  .crumbs a { color: var(--brass); } .crumbs span { opacity: 0.6; }
+
+  .def { border-left: 3px solid var(--brass); padding: 1.2rem 0 1.2rem 1.5rem; }
+  .def__label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brass-deep); display: block; margin-bottom: 0.6rem; }
+  .def p { font-size: 1.2rem; line-height: 1.6; }
+
+  .calc { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: clamp(1.5rem, 4vw, 2.4rem); }
+  .calc__field { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .calc__field span { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .calc__field output { font-family: var(--font-display); font-size: clamp(1.6rem, 3.5vw, 2.2rem); color: var(--emerald); }
+  #calc-range { width: 100%; margin: 1rem 0 1.8rem; accent-color: var(--brass-deep); }
+  .calc__results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .calc__res { border-top: 2px solid var(--line); padding-top: 0.9rem; }
+  .calc__res--total { border-top-color: var(--brass); }
+  .calc__res-label { font-size: 0.82rem; color: var(--muted); display: block; min-height: 2.4em; }
+  .calc__res strong { font-family: var(--font-display); font-size: clamp(1.3rem, 2.6vw, 1.7rem); color: var(--ink); }
+  .calc__res--total strong { color: var(--brass-deep); }
+  .calc__note { margin-top: 1.4rem; font-size: 0.78rem; color: var(--muted); font-style: italic; }
+  @media (max-width: 620px) { .calc__results { grid-template-columns: 1fr; gap: 1.2rem; } }
+</style>
+
+<script>
+  const fmt = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
+  const eur = (n: number) => fmt.format(Math.round(n)) + ' €';
+  const THRESHOLD = 157000; // ≈ 170 000 US$
+  const range = document.getElementById('calc-range') as HTMLInputElement | null;
+  const elPrice = document.getElementById('calc-price');
+  const elTransfer = document.getElementById('calc-transfer');
+  const elIpi = document.getElementById('calc-ipi');
+  const elTotal = document.getElementById('calc-total');
+
+  function update() {
+    if (!range) return;
+    const price = parseFloat(range.value);
+    const transfer = price * 0.03;
+    const ipiAnnual = Math.max(0, price - THRESHOLD) * 0.01;
+    const ipi15 = ipiAnnual * 15;
+    if (elPrice) elPrice.textContent = eur(price);
+    if (elTransfer) elTransfer.textContent = eur(transfer);
+    if (elIpi) elIpi.textContent = eur(ipi15);
+    if (elTotal) elTotal.textContent = eur(transfer + ipi15);
+  }
+  range?.addEventListener('input', update);
+  update();
+</script>

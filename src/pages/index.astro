@@ -1,0 +1,366 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { CONTACT, FOUNDER, SOCIAL, SITE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const featured = (await getCollection('properties', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const featuredBien = featured[0];
+const nfHome = new Intl.NumberFormat('fr-FR');
+const curHome = (n: number, c: string) => `${nfHome.format(n)} ${c === 'USD' ? '$' : '€'}`;
+
+const homeFaq = [
+  { q: "Quelle différence avec une agence immobilière ?", a: "Une agence présente les biens de son portefeuille, pour le compte du vendeur. Nous sommes votre conseil à l'achat : nous travaillons avec l'ensemble des agences de Las Terrenas — et en off-market — pour vous présenter les meilleures opportunités du marché et défendre votre intérêt d'acquéreur. Nous collaborons avec les agences, nous ne leur faisons pas concurrence." },
+  { q: "Un étranger peut-il acheter à Las Terrenas ?", a: "Oui, avec les mêmes droits de propriété qu'un national, sans condition de résidence. Le bien est détenu en pleine propriété à votre nom, sécurisé par le système de titres Torrens." },
+  { q: "Quel rendement net peut-on réellement viser ?", a: "Les rendements bruts annoncés tournent souvent autour de 8 à 10 %. Net de charges, gestion, vacance et fiscalité, une fourchette réaliste se situe plutôt entre 5,6 % et 7,7 %. Nous refusons les promesses de rendement garanti." },
+  { q: "Qu'apporte concrètement le CONFOTUR ?", a: "Pour le premier acquéreur d'un projet certifié : exonération de la taxe de transfert de 3 % et de l'impôt foncier IPI pendant 10 à 15 ans. L'éligibilité se vérifie projet par projet — <a href='/confotur'>voir notre page CONFOTUR</a>." },
+  { q: "Comment êtes-vous rémunérés ?", a: "Par une mission de conseil claire, définie avec vous en amont, et/ou un partage d'honoraires avec l'agence partenaire — sans surcoût pour vous par rapport à un achat en direct. Dans tous les cas, notre sélection reste guidée par votre seul intérêt." },
+  { q: "Quel budget faut-il pour investir à Las Terrenas ?", a: "Les opportunités pertinentes démarrent généralement autour de 150 000 à 250 000 € pour un appartement, davantage pour une villa en zone premium. Un investissement d'environ 200 000 US$ ouvre par ailleurs une voie de résidence accélérée." },
+  { q: "Quelles vérifications faites-vous avant un achat ?", a: "Titre de propriété (Registro de Títulos), certificat de non-dette, deslinde (bornage GPS), certification CONFOTUR le cas échéant, et analyse de la rentabilité réelle. Le tout avec votre avocat indépendant." },
+];
+---
+<MarketingLayout title="Investir à Las Terrenas en toute sécurité" path="/">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero section--ink">
+    <div class="hero__bg" aria-hidden="true">
+      <svg viewBox="0 0 1440 700" preserveAspectRatio="xMidYMid slice">
+        <g fill="none" stroke="#bd9a57" stroke-width="1">
+          <path d="M-50 560 C 300 480, 520 470, 760 380 S 1180 250, 1500 240" opacity="0.30"/>
+          <path d="M-50 600 C 320 520, 560 505, 800 415 S 1220 285, 1500 280" opacity="0.22"/>
+          <path d="M-50 520 C 280 445, 480 435, 720 345 S 1140 215, 1500 200" opacity="0.16"/>
+          <path d="M-50 640 C 340 560, 600 545, 840 455 S 1260 320, 1500 320" opacity="0.12"/>
+          <path d="M-50 480 C 260 410, 440 400, 680 310 S 1100 180, 1500 165" opacity="0.10"/>
+        </g>
+      </svg>
+    </div>
+    <div class="container hero__inner">
+      <span class="eyebrow" data-reveal>Conseil en acquisition immobilière · Las Terrenas, République Dominicaine</span>
+      <h1 data-reveal>Investir à Las Terrenas<br />en toute <em>sécurité.</em></h1>
+      <p class="lead hero__lead" data-reveal>
+        Nous sélectionnons et analysons pour vous les meilleures opportunités d'acquisition —
+        appartements, villas, projets CONFOTUR — en collaboration avec les agences locales.
+        <strong>Un conseil objectif, du côté de l'acquéreur.</strong>
+      </p>
+      <div class="btn-row hero__cta" data-reveal>
+        <a href="#opportunites" class="btn btn--primary btn--lg">Recevoir la sélection privée</a>
+        <a href={CONTACT.calendly} class="btn btn--ghost btn--lg" target="_blank" rel="noopener">Réserver un appel stratégique</a>
+        <a href={CONTACT.whatsapp} class="btn btn--wa btn--lg" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+      <ul class="hero__trust" data-reveal>
+        <li>Ex-Kaufman&nbsp;&&nbsp;Broad</li>
+        <li>Ex-ClubFunding</li>
+        <li>20+ ans d'immobilier</li>
+        <li>Réseau & présence sur place</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ DONNÉES DE MARCHÉ ============ -->
+  <section class="section section--paper" id="marche">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Le marché, en chiffres</span>
+        <h2>Des fondamentaux <em>solides</em>, lus sans filtre.</h2>
+        <p class="lead">Données de marché publiques, pas un argumentaire. Elles cadrent l'opportunité — elles ne la garantissent pas.</p>
+      </div>
+      <div class="stats">
+        <div class="stat" data-reveal>
+          <div class="stat__num"><span data-count="11" data-decimals="0">0</span>&nbsp;M+</div>
+          <div class="stat__label">touristes en République Dominicaine (2024)</div>
+        </div>
+        <div class="stat" data-reveal>
+          <div class="stat__num"><span data-count="5.6" data-decimals="1">0</span>–<span data-count="7.7" data-decimals="1">0</span>&nbsp;%</div>
+          <div class="stat__label">rendement locatif net réaliste (hors promesse garantie)</div>
+        </div>
+        <div class="stat" data-reveal>
+          <div class="stat__num"><span data-count="10.7" data-decimals="1">0</span>&nbsp;%</div>
+          <div class="stat__label">hausse des prix des appartements sur un an</div>
+        </div>
+        <div class="stat" data-reveal>
+          <div class="stat__num">0&nbsp;%</div>
+          <div class="stat__label">taxe de transfert avec le CONFOTUR (1<sup>er</sup> acquéreur certifié)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OPPORTUNITÉS ============ -->
+  <section class="section" id="opportunites">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Opportunité sélectionnée</span>
+        <h2>Le bien du moment,<br /><em>analysé et sécurisé.</em></h2>
+        <p class="lead">Nous sourçons et analysons les meilleurs biens du marché — avec les agences de Las Terrenas et en off-market — puis nous ne présentons que ceux qui servent vraiment votre projet.</p>
+      </div>
+
+      {featuredBien && (
+        <a href={`/biens/${featuredBien.slug}`} class={`opp-feature${featuredBien.data.images.length ? ' has-img' : ''}`} data-reveal>
+          {featuredBien.data.images.length > 0 && (
+            <div class="opp-feature__img"><img src={featuredBien.data.images[0].src} alt={featuredBien.data.images[0].alt} loading="lazy" /></div>
+          )}
+          <div class="opp-feature__body">
+            <div class="opp-feature__top">
+              <span class="badge badge--solid">{featuredBien.data.confotur ? 'CONFOTUR' : 'Analysé & sécurisé'}</span>
+              <span class="opp-feature__ref">{featuredBien.data.ref}</span>
+            </div>
+            <h3>{featuredBien.data.title}</h3>
+            <p class="opp-feature__loc">{featuredBien.data.location}</p>
+            <ul class="opp-feature__chips">
+              {featuredBien.data.pieces && <li>{featuredBien.data.pieces} pièces</li>}
+              {featuredBien.data.bedrooms && <li>{featuredBien.data.bedrooms} ch.</li>}
+              {featuredBien.data.surfaceM2 && <li>{featuredBien.data.surfaceM2} m²</li>}
+              {featuredBien.data.floor && <li>{featuredBien.data.floor}</li>}
+            </ul>
+            <p class="opp-feature__summary">{featuredBien.data.summary}</p>
+          </div>
+          <div class="opp-feature__aside">
+            <span class="opp-feature__plabel">Prix de vente</span>
+            <span class="opp-feature__price">{curHome(featuredBien.data.price, featuredBien.data.currency)}</span>
+            {featuredBien.data.surfaceM2 && <span class="opp-feature__pm2">≈ {curHome(Math.round(featuredBien.data.price / featuredBien.data.surfaceM2), featuredBien.data.currency)} / m²</span>}
+            <span class="opp-feature__see">Voir le bien →</span>
+          </div>
+        </a>
+      )}
+
+      <p class="opp__note" data-reveal>Un seul lot est actuellement proposé à la vente. D'autres biens sont sourcés en off-market et présentés sur demande — <a href="/biens">voir la sélection</a> ou <a href={CONTACT.whatsapp} target="_blank" rel="noopener">nous écrire sur WhatsApp</a>.</p>
+    </div>
+  </section>
+
+  <!-- ============ POURQUOI NOUS / INDÉPENDANCE ============ -->
+  <section class="section section--emerald" id="pourquoi">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Pourquoi nous</span>
+        <h2>Le conseil <em>objectif</em>, du côté de l'acquéreur.</h2>
+        <p class="lead">En collaboration avec les meilleures agences de Las Terrenas — jamais en concurrence avec elles. Elles connaissent le terrain, nous défendons votre intérêt d'acheteur. Ensemble, vous accédez au meilleur du marché.</p>
+      </div>
+      <div class="grid grid-4">
+        <div class="why" data-reveal><span class="kicker-index">01</span><h3>Objectif, à vos côtés</h3><p>Nous représentons votre intérêt d'acquéreur. Notre sélection est guidée par votre projet — et par rien d'autre.</p></div>
+        <div class="why" data-reveal><span class="kicker-index">02</span><h3>Tout le marché</h3><p>En réseau avec les agences locales et en off-market, nous accédons à l'ensemble de l'offre — pas au seul portefeuille d'une agence.</p></div>
+        <div class="why" data-reveal><span class="kicker-index">03</span><h3>Double compétence</h3><p>Immobilier + ingénierie financière, via HERELES. Nous lisons un bilan, une grille de prix, une rentabilité réelle.</p></div>
+        <div class="why" data-reveal><span class="kicker-index">04</span><h3>Vérifié, sur place</h3><p>Titre, non-dette, deslinde, CONFOTUR, négociation, acte : nous sécurisons l'acquisition de bout en bout, à Las Terrenas.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RISQUES ============ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">À lire avant d'acheter</span>
+        <h2>Ce qu'il faut vraiment savoir avant <em>d'acheter.</em></h2>
+      </div>
+      <div class="grid grid-3">
+        <div class="card" data-reveal><h3>Aucun registre public des prix</h3><p>En République Dominicaine, les « prix du marché » viennent d'annonces, pas de transactions enregistrées. Comparer, c'est analyser — pas consulter.</p></div>
+        <div class="card" data-reveal><h3>Brut ≠ net</h3><p>9 % affichés peuvent devenir 6 % encaissés une fois charges, gestion, vacance et fiscalité déduites.</p></div>
+        <div class="card" data-reveal><h3>Le deslinde n'est pas optionnel</h3><p>Sans bornage GPS et titre purgé, un terrain « parfait » peut cacher un litige de limites. C'est une vérification, pas une formalité.</p></div>
+        <div class="card" data-reveal><h3>Le CONFOTUR n'est pas automatique</h3><p>Il dépend de la certification du projet et de votre rang d'acquéreur. À vérifier projet par projet, jamais à présumer.</p></div>
+        <div class="card" data-reveal><h3>Change & rapatriement</h3><p>Loyers en pesos ou en dollars, frais de change, modalités de rapatriement : autant de lignes qui pèsent sur le rendement réel.</p></div>
+        <div class="card" data-reveal><h3>La gestion locative décide du résultat</h3><p>Un bon bien mal géré est un mauvais investissement. La qualité de l'exploitation fait l'écart de performance.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MÉTHODE ============ -->
+  <section class="section section--ink" id="methode">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Notre méthode</span>
+        <h2>De l'analyse à la <em>gestion</em>, six étapes.</h2>
+      </div>
+      <ol class="steps">
+        <li class="step" data-reveal><span class="step__n">1</span><h3>Analyse</h3><p>Budget, objectifs de rendement, horizon, fiscalité. On cadre votre projet avant de regarder le moindre bien.</p></li>
+        <li class="step" data-reveal><span class="step__n">2</span><h3>Sélection</h3><p>Des biens réellement pertinents — pas seulement disponibles. Off-market inclus.</p></li>
+        <li class="step" data-reveal><span class="step__n">3</span><h3>Vérification</h3><p>Titre, non-dette, deslinde, CONFOTUR. Due diligence avec votre avocat indépendant.</p></li>
+        <li class="step" data-reveal><span class="step__n">4</span><h3>Négociation</h3><p>Prix, conditions, calendrier. Nous défendons votre position, pas celle du vendeur.</p></li>
+        <li class="step" data-reveal><span class="step__n">5</span><h3>Acquisition</h3><p>Promesse de vente, acte notarié, taxe de transfert, enregistrement du titre. 60 à 90 jours en moyenne.</p></li>
+        <li class="step" data-reveal><span class="step__n">6</span><h3>Gestion</h3><p>Mise en location, suivi, optimisation. Si vous le souhaitez, on reste à vos côtés après l'achat.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ CONFOTUR teaser ============ -->
+  <section class="section section--paper">
+    <div class="container confotur-teaser">
+      <div data-reveal>
+        <span class="eyebrow">Fiscalité</span>
+        <h2>CONFOTUR : <em>0 %</em> de taxe de transfert, IPI exonéré jusqu'à 15 ans.</h2>
+        <p class="lead">Sur un bien certifié, l'économie cumulée se compte en dizaines de milliers d'euros. Encore faut-il vérifier l'éligibilité, votre rang d'acquéreur et la durée restante.</p>
+        <div class="btn-row">
+          <a href="/confotur" class="btn btn--dark btn--lg">Comprendre le CONFOTUR + simulateur</a>
+        </div>
+      </div>
+      <div class="confotur-teaser__card" data-reveal>
+        <div class="cf-line"><span>Taxe de transfert (3 %)</span><strong>Exonérée</strong></div>
+        <div class="cf-line"><span>Impôt foncier IPI (1 %/an)</span><strong>0 € · 10–15 ans</strong></div>
+        <div class="cf-line"><span>Revenus locatifs</span><strong>Exonérés ~10 ans</strong></div>
+        <p class="cf-note">Indicatif — à vérifier projet par projet.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FONDATEUR ============ -->
+  <section class="section" id="fondateur">
+    <div class="container founder">
+      <div class="founder__media" data-reveal>
+        <img class="founder__photo" src="/benjamin-slama.jpg" alt="Benjamin Slama, conseil en acquisition immobilière à Las Terrenas" width="426" height="477" loading="lazy" />
+        <div class="founder__id">
+          <strong>{FOUNDER.name}</strong>
+          <span>{FOUNDER.role}</span>
+          <div class="founder__social">
+            <a href={SOCIAL.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+            <a href={SOCIAL.instagram} target="_blank" rel="noopener">Instagram</a>
+            <a href={SOCIAL.x} target="_blank" rel="noopener">X</a>
+          </div>
+        </div>
+      </div>
+      <div class="founder__text" data-reveal>
+        <span class="eyebrow">Le fondateur</span>
+        <h2>Pourquoi me faire <em>confiance.</em></h2>
+        <p>Professionnel de l'immobilier depuis plus de vingt ans, j'ai construit mon expertise à l'interface de la promotion immobilière et du financement d'opérations complexes.</p>
+        <p>Après <strong>quinze années chez Kaufman & Broad</strong> — de la recherche foncière à la commercialisation, en Île-de-France — j'ai structuré des financements alternatifs chez <strong>ClubFunding</strong>. Aujourd'hui, avec <strong>HERELES</strong>, j'accompagne investisseurs et opérateurs en France et aux Caraïbes.</p>
+        <p>À Las Terrenas, j'applique la même exigence : analyser avant de recommander, vérifier avant de signer, et négocier chaque acquisition dans le seul intérêt de l'acquéreur — en m'appuyant sur les meilleures agences locales.</p>
+        <div class="btn-row">
+          <a href={CONTACT.calendly} class="btn btn--primary" target="_blank" rel="noopener">Échanger avec moi</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LEAD MAGNET ============ -->
+  <section class="section section--emerald" id="lead">
+    <div class="container lead-magnet">
+      <div class="lead-magnet__text" data-reveal>
+        <span class="eyebrow">Guide gratuit</span>
+        <h2>Les 17 erreurs qui coûtent le plus cher aux investisseurs français à Las Terrenas.</h2>
+        <p class="lead">Le document que nous remettons à nos clients avant tout achat. Concret, sans jargon. Reçu directement par email.</p>
+      </div>
+      <form name="guide" method="POST" action="/merci" data-netlify="true" netlify-honeypot="bot-field" class="lead-magnet__form" data-reveal>
+        <input type="hidden" name="form-name" value="guide" />
+        <p class="hidden-field"><label>Ne pas remplir : <input name="bot-field" /></label></p>
+        <label class="field"><span>Prénom</span><input type="text" name="prenom" required placeholder="Votre prénom" /></label>
+        <label class="field"><span>Email</span><input type="email" name="email" required placeholder="vous@email.com" /></label>
+        <button type="submit" class="btn btn--primary btn--lg">Recevoir le guide</button>
+        <p class="lead-magnet__fine">Aucun spam. Désinscription en un clic. Données traitées par HERELES (RGPD).</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section section--paper">
+    <div class="container narrow">
+      <span class="eyebrow" data-reveal>Questions fréquentes</span>
+      <h2 data-reveal style="margin:0.6rem 0 2.2rem;">Vos questions, des <em>réponses claires.</em></h2>
+      <Faq items={homeFaq} />
+    </div>
+  </section>
+
+  <CtaBand variant="ink" />
+</MarketingLayout>
+
+<style>
+  /* HERO */
+  .hero { position: relative; padding-block: clamp(5rem, 12vw, 9rem); overflow: hidden; }
+  .hero__bg { position: absolute; inset: 0; z-index: 0; }
+  .hero__bg svg { width: 100%; height: 100%; }
+  .hero__inner { position: relative; z-index: 2; max-width: 60rem; }
+  .hero h1 { margin: 1.2rem 0; }
+  .hero__lead { max-width: 40rem; }
+  .hero__lead strong { color: var(--bone); }
+  .hero__cta { margin-top: 2rem; }
+  .hero__trust { display: flex; flex-wrap: wrap; gap: 1.4rem; margin-top: 2.6rem; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--muted-light); }
+  .hero__trust li { display: flex; align-items: center; gap: 1.4rem; }
+  .hero__trust li::after { content: "·"; color: var(--brass); }
+  .hero__trust li:last-child::after { display: none; }
+
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .stat { border-top: 2px solid var(--brass); padding-top: 1.1rem; }
+  .stat__num { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.9rem); line-height: 1; color: var(--emerald); }
+  .stat__num sup { font-size: 0.5em; }
+  .stat__label { margin-top: 0.7rem; font-size: 0.9rem; color: var(--muted); max-width: 16rem; }
+  @media (max-width: 900px) { .stats { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
+  @media (max-width: 480px) { .stats { grid-template-columns: 1fr; } }
+
+  /* OPPORTUNITÉS */
+  .opp__card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .opp__card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .opp__veil { position: relative; height: 180px; display: grid; place-items: center; gap: 0.6rem;
+    background: repeating-linear-gradient(135deg, var(--emerald) 0 14px, var(--emerald-700) 14px 28px); color: var(--bone); }
+  .opp__veil .badge { position: absolute; top: 1rem; left: 1rem; }
+  .opp__lock { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.08em; opacity: 0.9; }
+  .opp__body { padding: 1.6rem; }
+  .opp__meta { margin: 1rem 0 1.4rem; display: grid; gap: 0.5rem; }
+  .opp__meta li { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.92rem; border-bottom: 1px dashed var(--line); padding-bottom: 0.5rem; }
+  .opp__meta span { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .opp__note { margin-top: 1.6rem; font-size: 0.9rem; color: var(--muted); font-style: italic; }
+
+  .opp-feature { display: grid; grid-template-columns: 1fr; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; text-decoration: none; color: inherit; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+  .opp-feature:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--brass); }
+  @media (min-width: 760px) { .opp-feature { grid-template-columns: 1fr 280px; } .opp-feature.has-img { grid-template-columns: 0.85fr 1.15fr 260px; } }
+  .opp-feature__img img { width: 100%; height: 100%; min-height: 210px; object-fit: cover; display: block; }
+  .opp-feature__body { padding: 1.8rem; }
+  .opp-feature__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .opp-feature__ref { font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted); }
+  .opp-feature__body h3 { font-size: 1.5rem; margin: 0 0 0.3rem; }
+  .opp-feature__loc { font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem; }
+  .opp-feature__chips { list-style: none; padding: 0; margin: 0 0 1rem; display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .opp-feature__chips li { font-family: var(--font-mono); font-size: 0.73rem; padding: 0.32em 0.75em; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); }
+  .opp-feature__summary { font-size: 0.96rem; line-height: 1.6; color: var(--ink); margin: 0; }
+  .opp-feature__aside { background: var(--emerald); color: var(--bone); padding: 1.8rem; display: flex; flex-direction: column; justify-content: center; gap: 0.3rem; }
+  .opp-feature__plabel { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brass); }
+  .opp-feature__price { font-family: var(--font-display); font-size: 2rem; font-weight: 600; }
+  .opp-feature__pm2 { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted-light); }
+  .opp-feature__see { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--brass); }
+
+  /* WHY */
+  .why .kicker-index { display: block; margin-bottom: 0.8rem; }
+  .why h3 { color: var(--bone); margin-bottom: 0.5rem; }
+  .why p { color: var(--muted-light); font-size: 0.95rem; }
+
+  /* STEPS */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem 2.5rem; counter-reset: s; }
+  .step { border-top: 1px solid var(--line-dark); padding-top: 1.2rem; }
+  .step__n { font-family: var(--font-display); font-size: 2.2rem; color: var(--brass); display: block; line-height: 1; }
+  .step h3 { color: var(--bone); margin: 0.6rem 0 0.4rem; }
+  .step p { color: var(--muted-light); font-size: 0.95rem; }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+
+  /* CONFOTUR teaser */
+  .confotur-teaser { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .confotur-teaser h2 { margin: 0.8rem 0 1rem; }
+  .confotur-teaser__card { background: var(--ink); color: var(--bone); border-radius: var(--radius-lg); padding: 1.8rem; border-top: 3px solid var(--brass); }
+  .cf-line { display: flex; justify-content: space-between; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--line-dark); font-size: 0.95rem; }
+  .cf-line strong { color: var(--brass); font-family: var(--font-mono); font-size: 0.9rem; }
+  .cf-note { margin-top: 1rem; font-size: 0.78rem; color: var(--muted-light); font-style: italic; }
+  @media (max-width: 800px) { .confotur-teaser { grid-template-columns: 1fr; } }
+
+  /* FOUNDER */
+  .founder { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+  .founder__media { text-align: center; }
+  .founder__photo { width: min(100%, 320px); aspect-ratio: 4/5; object-fit: cover; object-position: center 18%; margin-inline: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow); display: block; }
+  .founder__id { margin-top: 1.4rem; }
+  .founder__id strong { font-family: var(--font-display); font-size: 1.3rem; display: block; }
+  .founder__id span { color: var(--muted); font-size: 0.9rem; }
+  .founder__social { display: flex; gap: 1rem; justify-content: center; margin-top: 0.9rem; }
+  .founder__social a { font-family: var(--font-mono); font-size: 0.78rem; color: var(--brass-deep); }
+  .founder__text h2 { margin: 0.6rem 0 1.2rem; }
+  .founder__text p { color: var(--muted); margin-bottom: 1rem; }
+  .founder__text p strong { color: var(--ink); }
+  @media (max-width: 800px) { .founder { grid-template-columns: 1fr; } }
+
+  /* LEAD MAGNET */
+  .lead-magnet { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .lead-magnet__text h2 { margin: 0.7rem 0 1rem; font-size: clamp(1.6rem, 3vw, 2.3rem); }
+  .lead-magnet__form { background: var(--paper); border-radius: var(--radius-lg); padding: clamp(1.5rem, 3vw, 2.2rem); display: grid; gap: 0.9rem; box-shadow: var(--shadow); }
+  .field { display: grid; gap: 0.35rem; }
+  .field span { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .field input { padding: 0.85em 1em; border: 1px solid var(--line); border-radius: var(--radius); font: inherit; background: var(--bone-soft); color: var(--ink); }
+  .lead-magnet__form .btn { margin-top: 0.4rem; }
+  .lead-magnet__fine { font-size: 0.76rem; color: var(--muted); }
+  .hidden-field { display: none; }
+  @media (max-width: 800px) { .lead-magnet { grid-template-columns: 1fr; } }
+</style>

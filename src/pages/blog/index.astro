@@ -1,0 +1,84 @@
+---
+import { getCollection } from 'astro:content';
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const categories = [...new Set(posts.map((p) => p.data.category))];
+const dateFmt = (d: Date) => d.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<MarketingLayout
+  title="Le blog — investir à Las Terrenas"
+  description="Analyses, guides d'achat, fiscalité CONFOTUR, quartiers et marché immobilier de Las Terrenas. Le contenu de référence pour investir en République Dominicaine."
+  path="/blog"
+>
+  <section class="section section--ink page-hero">
+    <div class="container">
+      <span class="eyebrow">Le blog</span>
+      <h1>Comprendre l'investissement à <em>Las Terrenas.</em></h1>
+      <p class="lead">Guides, fiscalité, quartiers, marché. Le savoir qu'on partage avant de recommander.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {categories.length > 0 && (
+        <div class="cats" data-reveal aria-label="Filtrer par catégorie">
+          <button class="cat-chip is-active" data-filter="*" type="button">Tous</button>
+          {categories.map((c) => <button class="cat-chip" data-filter={c} type="button">{c}</button>)}
+        </div>
+      )}
+
+      {posts.length === 0 ? (
+        <p class="empty">Les premiers articles arrivent très bientôt.</p>
+      ) : (
+        <div class="grid grid-3 posts">
+          {posts.map((post) => (
+            <a href={`/blog/${post.slug}`} class="post-card" data-category={post.data.category} data-reveal>
+              <span class="post-card__cat">{post.data.category}</span>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+              <time datetime={post.data.pubDate.toISOString()}>{dateFmt(post.data.pubDate)}</time>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <CtaBand />
+</MarketingLayout>
+
+<style>
+  .page-hero h1 { margin: 1rem 0; }
+  .cats { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2.5rem; }
+  .cat-chip { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brass-deep); background: transparent; border: 1px solid var(--line); padding: 0.45em 0.9em; border-radius: 999px; cursor: pointer; transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease; }
+  .cat-chip:hover { border-color: var(--brass); }
+  .cat-chip.is-active { background: var(--emerald); color: var(--bone); border-color: var(--emerald); }
+  .post-card.is-hidden { display: none; }
+  .posts { align-items: stretch; }
+  .post-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.6rem; display: flex; flex-direction: column; gap: 0.7rem; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+  .post-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--brass); }
+  .post-card__cat { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brass-deep); }
+  .post-card h3 { font-size: 1.25rem; }
+  .post-card p { color: var(--muted); font-size: 0.95rem; flex: 1; }
+  .post-card time { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+  .empty { color: var(--muted); font-size: 1.1rem; }
+</style>
+
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.cat-chip'));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.post-card'));
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const f = chip.getAttribute('data-filter');
+      chips.forEach((c) => c.classList.toggle('is-active', c === chip));
+      cards.forEach((card) => {
+        const show = f === '*' || card.getAttribute('data-category') === f;
+        card.classList.toggle('is-hidden', !show);
+      });
+    });
+  });
+</script>

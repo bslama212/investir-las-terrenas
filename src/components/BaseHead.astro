@@ -1,0 +1,131 @@
+---
+import { SITE, LEGAL, CONTACT, SOCIAL, FOUNDER } from '../consts';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** chemin relatif, ex: "/confotur" */
+  path?: string;
+  ogType?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = SITE.description,
+  path = '',
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(path || Astro.url.pathname, SITE.url).href.replace(/\/$/, '') || SITE.url;
+const ogImage = new URL(SITE.ogImage, SITE.url).href;
+const fullTitle = path === '' || path === '/' ? title : `${title} | ${SITE.name}`;
+
+// --- JSON-LD : présence sur tout le site ---
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'RealEstateAgent',
+  '@id': `${SITE.url}/#organization`,
+  name: SITE.name,
+  description: SITE.description,
+  url: SITE.url,
+  image: ogImage,
+  logo: ogImage,
+  telephone: CONTACT.phoneDisplay,
+  email: CONTACT.email,
+  priceRange: '€€€',
+  areaServed: [
+    { '@type': 'Place', name: 'Las Terrenas, Samaná, République Dominicaine' },
+    { '@type': 'Place', name: 'République Dominicaine' },
+  ],
+  knowsAbout: [
+    'Investissement immobilier Las Terrenas',
+    'CONFOTUR',
+    'Achat immobilier en République Dominicaine',
+    'Rendement locatif',
+    'Fiscalité immobilière République Dominicaine',
+  ],
+  parentOrganization: { '@type': 'Organization', name: LEGAL.parentBrand, url: LEGAL.parentUrl },
+  founder: { '@type': 'Person', name: FOUNDER.name, url: SOCIAL.linkedin },
+  sameAs: [SOCIAL.linkedin, SOCIAL.instagram, SOCIAL.x, LEGAL.parentUrl],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE.url}/#website`,
+  url: SITE.url,
+  name: SITE.name,
+  inLanguage: 'fr-FR',
+  description: SITE.description,
+  publisher: { '@id': `${SITE.url}/#organization` },
+};
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${SITE.url}/#founder`,
+  name: FOUNDER.name,
+  jobTitle: FOUNDER.role,
+  worksFor: { '@type': 'Organization', name: LEGAL.parentBrand, url: LEGAL.parentUrl },
+  alumniOf: [
+    { '@type': 'Organization', name: 'Kaufman & Broad' },
+    { '@type': 'Organization', name: 'ClubFunding' },
+  ],
+  url: SITE.url,
+  sameAs: [SOCIAL.linkedin, SOCIAL.instagram, SOCIAL.x],
+};
+---
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<!-- Google Analytics (GA4) -->
+<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-C8J0ZYP7MY"></script>
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-C8J0ZYP7MY');
+</script>
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+<meta name="generator" content={Astro.generator} />
+<meta name="author" content={FOUNDER.name} />
+<meta name="theme-color" content="#0c1a16" />
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={SITE.locale} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- Fonts (preconnect + swap pour la perf) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+/>
+
+<!-- JSON-LD global -->
+<script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />

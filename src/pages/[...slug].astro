@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../consts';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages', ({ data }) => !data.draft);
+  return pages.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const d = entry.data;
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: d.title, item: `${SITE.url}/${entry.slug}` },
+  ],
+};
+---
+<MarketingLayout title={d.title} description={d.description} path={`/${entry.slug}`} ogType="article">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} slot="head" />
+
+  <section class="section section--ink page-hero">
+    <div class="container narrow">
+      <nav class="crumbs" aria-label="Fil d'Ariane"><a href="/">Accueil</a> <span>/</span> <span>{d.title}</span></nav>
+      {d.eyebrow && <span class="eyebrow">{d.eyebrow}</span>}
+      <h1>{d.h1 ?? d.title}</h1>
+      {d.intro && <p class="lead">{d.intro}</p>}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <article class="prose"><Content /></article>
+    </div>
+  </section>
+
+  {d.faq && d.faq.length > 0 && (
+    <section class="section section--paper">
+      <div class="container narrow">
+        <Faq items={d.faq} title="Questions fréquentes" />
+      </div>
+    </section>
+  )}
+
+  <CtaBand />
+</MarketingLayout>
+
+<style>
+  .page-hero h1 { margin: 1rem 0; }
+  .crumbs { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted-light); margin-bottom: 1.4rem; }
+  .crumbs a { color: var(--brass); }
+  .crumbs span { opacity: 0.6; }
+</style>

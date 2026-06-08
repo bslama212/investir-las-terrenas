@@ -1,0 +1,21 @@
+{
+  "name": "investir-las-terrenas",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Investir Las Terrenas — conseil indépendant en investissement immobilier à Las Terrenas (République Dominicaine). Par HERELES.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "engines": {
+    "node": ">=18.17.1"
+  },
+  "dependencies": {
+    "astro": "^4.16.18",
+    "@astrojs/sitemap": "^3.2.1"
+  }
+}

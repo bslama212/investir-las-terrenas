@@ -1,0 +1,225 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { CONTACT, SITE } from '../../consts';
+
+export async function getStaticPaths() {
+  const props = await getCollection('properties', ({ data }) => !data.draft);
+  return props.map((p) => ({ params: { slug: p.slug }, props: { slug: p.slug } }));
+}
+
+const { slug } = Astro.props;
+const property = await getEntry('properties', slug);
+const { Content } = await property.render();
+const d = property.data;
+
+const nf = new Intl.NumberFormat('fr-FR');
+const cur = (n: number) => `${nf.format(n)} ${d.currency === 'USD' ? '$' : '€'}`;
+const priceM2 = d.surfaceM2 ? Math.round(d.price / d.surfaceM2) : null;
+const hero = d.images.length > 0 ? d.images[0].src : null;
+
+const chips = [
+  d.propertyType,
+  d.pieces ? `${d.pieces} pièces` : null,
+  d.bedrooms ? `${d.bedrooms} ch.` : null,
+  d.bathrooms ? `${d.bathrooms} sdb` : null,
+  d.surfaceM2 ? `${d.surfaceM2} m²` : null,
+  d.floor,
+].filter(Boolean);
+
+const specs = [
+  ['Type', d.propertyType],
+  ['Pièces', d.pieces ? `${d.pieces}` : null],
+  ['Chambre', d.bedrooms ? `${d.bedrooms}` : null],
+  ['Salle de bain', d.bathrooms ? `${d.bathrooms}` : null],
+  ['Étage', d.floor],
+  ['Surface', d.surfaceM2 ? `${d.surfaceM2} m²${d.surfaceNote ? ` (${d.surfaceNote})` : ''}` : null],
+  ['Prix au m²', priceM2 ? `≈ ${cur(priceM2)}` : null],
+  ['CONFOTUR', d.confotur ? 'Oui' : 'Non'],
+].filter(([, v]) => v);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Apartment',
+  name: d.title,
+  description: d.summary,
+  ...(d.pieces ? { numberOfRooms: d.pieces } : {}),
+  ...(d.bedrooms ? { numberOfBedrooms: d.bedrooms } : {}),
+  ...(d.bathrooms ? { numberOfBathroomsTotal: d.bathrooms } : {}),
+  ...(d.surfaceM2 ? { floorSize: { '@type': 'QuantitativeValue', value: d.surfaceM2, unitCode: 'MTK' } } : {}),
+  address: { '@type': 'PostalAddress', addressLocality: 'Las Terrenas', addressRegion: 'Samaná', addressCountry: 'DO' },
+  url: `${SITE.url}/biens/${slug}`,
+  offers: {
+    '@type': 'Offer',
+    price: d.price,
+    priceCurrency: d.currency,
+    availability: d.available ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+    url: `${SITE.url}/biens/${slug}`,
+  },
+};
+---
+<MarketingLayout
+  title={`${d.title} — ${cur(d.price)} | ${SITE.name}`}
+  description={d.summary}
+  path={`/biens/${slug}`}
+>
+  <article class="bien">
+    <header class={`bien-hero${hero ? ' has-img' : ''}`} style={hero ? `background-image:url('${hero}')` : undefined}>
+      <div class="container bien-hero__inner">
+        <a href="/biens" class="bien-back">← Tous les biens</a>
+        <span class="eyebrow">{d.ref ? `Réf. ${d.ref} · ` : ''}{d.residence}</span>
+        <h1>{d.title}</h1>
+        <p class="bien-hero__loc">{d.location}</p>
+        <div class="bien-chips">
+          {chips.map((c) => <span class="bien-chip">{c}</span>)}
+        </div>
+      </div>
+    </header>
+
+    <div class="container bien-grid">
+      <div class="bien-main">
+        {d.images.length > 0 ? (
+          <section class="bien-gallery">
+            {d.images.map((img) => <img src={img.src} alt={img.alt} class={img.wide ? 'wide' : ''} loading="lazy" />)}
+          </section>
+        ) : (
+          <p class="bien-gallery-note">Photos détaillées transmises avec le dossier complet, sur demande.</p>
+        )}
+
+        <section class="bien-block prose">
+          <h2>Le bien</h2>
+          <Content />
+        </section>
+
+        <section class="bien-block">
+          <h2>Caractéristiques</h2>
+          <ul class="bien-specs">
+            {specs.map(([k, v]) => <li><span>{k}</span><strong>{v}</strong></li>)}
+          </ul>
+        </section>
+
+        {d.features.length > 0 && (
+          <section class="bien-block">
+            <h2>Points forts</h2>
+            <ul class="bien-tags">{d.features.map((f) => <li>{f}</li>)}</ul>
+          </section>
+        )}
+
+        {d.residenceFeatures.length > 0 && (
+          <section class="bien-block">
+            <h2>La résidence</h2>
+            <ul class="bien-tags">{d.residenceFeatures.map((f) => <li>{f}</li>)}</ul>
+          </section>
+        )}
+
+        {d.comparables.length > 0 && (
+          <section class="bien-block">
+            <h2>Marché &amp; positionnement</h2>
+            <p class="bien-muted">Repères de ventes au sein de la résidence — contexte de marché, pas une garantie de valeur.</p>
+            <table class="bien-comps">
+              <tbody>
+                {d.comparables.map((c) => (
+                  <tr><td>{c.label}</td><td>{c.price}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
+
+        {d.yieldNet && (
+          <section class="bien-block">
+            <h2>Rendement locatif</h2>
+            <p>Rendement net <strong>indicatif</strong> de l'ordre de <strong>{d.yieldNet}</strong> — {d.yieldNote}.</p>
+            <p class="bien-muted">Nos hypothèses sont prudentes (vacance, gestion et charges incluses), dans la logique expliquée sur notre page <a href="/rendement-locatif-las-terrenas">rendement locatif à Las Terrenas</a>. L'analyse chiffrée complète vous est transmise sur demande.</p>
+          </section>
+        )}
+
+        {d.notes.length > 0 && (
+          <section class="bien-block bien-notes">
+            <h2>Bon à savoir</h2>
+            <ul>{d.notes.map((n) => <li>{n}</li>)}</ul>
+          </section>
+        )}
+      </div>
+
+      <aside class="bien-side">
+        <div class="bien-card">
+          <span class="badge badge--solid">Sélection Hereles · Analysé</span>
+          <div class="bien-price">{cur(d.price)}</div>
+          {priceM2 && <div class="bien-pm2">≈ {cur(priceM2)} / m²{d.surfaceNote ? ` · ${d.surfaceNote}` : ''}</div>}
+          <ul class="bien-quick">
+            {d.pieces && <li><span>Type</span>{d.propertyType} · {d.pieces}p</li>}
+            {d.surfaceM2 && <li><span>Surface</span>{d.surfaceM2} m²</li>}
+            {d.floor && <li><span>Étage</span>{d.floor}</li>}
+            <li><span>Statut</span>{d.status}</li>
+          </ul>
+          <a href={CONTACT.whatsapp} class="btn btn--wa btn--lg btn--block" target="_blank" rel="noopener">Discuter sur WhatsApp</a>
+          <a href={CONTACT.calendly} class="btn btn--primary btn--lg btn--block" target="_blank" rel="noopener">Réserver une visioconférence</a>
+          <a href={`mailto:${CONTACT.email}?subject=${encodeURIComponent(`Dossier ${d.ref ?? d.title}`)}`} class="bien-mail">Recevoir le dossier complet →</a>
+          <p class="bien-fine">Conseil objectif, du côté de l'acquéreur. Analyse de rendement et pièces justificatives sur demande.</p>
+        </div>
+      </aside>
+    </div>
+  </article>
+
+  <CtaBand />
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</MarketingLayout>
+
+<style>
+  .bien-hero { background: linear-gradient(135deg, var(--emerald) 0%, var(--ink) 100%); color: var(--bone); padding: clamp(2.5rem, 7vw, 5rem) 0 clamp(2rem, 5vw, 3.5rem); position: relative; overflow: hidden; }
+  .bien-hero.has-img { background-size: cover; background-position: center; }
+  .bien-hero.has-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12,26,22,0.55), rgba(12,26,22,0.85)); }
+  .bien-hero__inner { position: relative; z-index: 1; }
+  .bien-back { font-family: var(--font-mono); font-size: 0.8rem; color: var(--brass); text-decoration: none; }
+  .bien-back:hover { color: var(--bone); }
+  .bien-hero .eyebrow { display: block; margin-top: 1.4rem; color: var(--brass-deep); }
+  .bien-hero h1 { font-size: clamp(1.9rem, 4.5vw, 3rem); margin: 0.5rem 0 0.4rem; color: var(--bone); }
+  .bien-hero__loc { color: var(--muted-light); margin-bottom: 1.3rem; }
+  .bien-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .bien-chip { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em; padding: 0.4em 0.8em; border: 1px solid rgba(244,239,230,0.25); border-radius: 999px; color: var(--bone); }
+
+  .bien-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; padding-top: clamp(2rem, 5vw, 3.2rem); padding-bottom: clamp(2.5rem, 6vw, 4rem); }
+  @media (min-width: 920px) { .bien-grid { grid-template-columns: 1fr 340px; gap: 3.5rem; align-items: start; } }
+
+  .bien-gallery { columns: 2; column-gap: 0.6rem; margin-bottom: 2rem; }
+  .bien-gallery img { width: 100%; height: auto; border-radius: 10px; margin-bottom: 0.6rem; display: block; break-inside: avoid; }
+  .bien-gallery img.wide { column-span: all; }
+  @media (max-width: 560px) { .bien-gallery { columns: 1; } }
+  .bien-gallery-note { font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); border-left: 2px solid var(--brass); padding-left: 0.9rem; margin-bottom: 2rem; }
+
+  .bien-block { margin-bottom: 2.4rem; }
+  .bien-block h2 { font-size: clamp(1.3rem, 2.6vw, 1.7rem); margin-bottom: 1rem; }
+  .bien-muted { color: var(--muted); font-size: 0.92rem; margin-bottom: 0.9rem; }
+
+  .bien-specs { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .bien-specs li { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.85rem 1rem; border-bottom: 1px solid var(--line); }
+  .bien-specs li:nth-child(odd) { border-right: 1px solid var(--line); }
+  .bien-specs span { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brass-deep); }
+  .bien-specs strong { font-size: 0.98rem; color: var(--ink); }
+
+  .bien-tags { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .bien-tags li { background: var(--bone); border: 1px solid var(--line); border-radius: 999px; padding: 0.45em 0.9em; font-size: 0.88rem; color: var(--ink); }
+
+  .bien-comps { width: 100%; border-collapse: collapse; }
+  .bien-comps td { padding: 0.7rem 0; border-bottom: 1px solid var(--line); font-size: 0.95rem; }
+  .bien-comps td:last-child { text-align: right; font-family: var(--font-mono); color: var(--emerald); white-space: nowrap; padding-left: 1rem; }
+  .bien-comps tr:last-child td { font-weight: 600; border-bottom: none; }
+
+  .bien-notes ul { list-style: none; padding: 0; margin: 0; }
+  .bien-notes li { position: relative; padding-left: 1.3rem; margin-bottom: 0.6rem; color: var(--muted); font-size: 0.92rem; }
+  .bien-notes li::before { content: '—'; position: absolute; left: 0; color: var(--brass-deep); }
+
+  .bien-card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 1.5rem; position: sticky; top: 90px; box-shadow: 0 18px 40px -28px rgba(12,26,22,0.4); }
+  .bien-price { font-family: var(--font-display); font-size: 2rem; font-weight: 600; color: var(--ink); margin-top: 0.9rem; }
+  .bien-pm2 { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem; }
+  .bien-quick { list-style: none; padding: 0; margin: 0 0 1.2rem; }
+  .bien-quick li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; color: var(--ink); }
+  .bien-quick span { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--brass-deep); }
+  .btn--block { width: 100%; margin-bottom: 0.6rem; }
+  .bien-mail { display: block; text-align: center; font-family: var(--font-mono); font-size: 0.82rem; color: var(--emerald); margin: 0.4rem 0 0.9rem; }
+  .bien-mail:hover { color: var(--brass-deep); }
+  .bien-fine { font-size: 0.76rem; color: var(--muted); line-height: 1.5; margin: 0; }
+</style>
